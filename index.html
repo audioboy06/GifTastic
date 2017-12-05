@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8">
+    <title>StarWars Gif's</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="css/reset.css"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1>StarWars Characters!</h1>
+    </div>
+    <!-- div for buttons -->
+    <div id="characterButtons">
+
+    </div>
+    <!-- This form allows user to input the name of a character they want to see-->
+    <form id="characterForm">
+        <label for="characterInput">Add a StarWars Character!</label>
+        <input type="text" id="characterInput">
+
+        <input id="addCharacter" type="submit" value="Use The Force!">
+    </form>
+
+    <div id="characterGifs">
+
+    </div>
+
+    <!-- <link rel="javascript" href="assets/javascript/app.js"> -->
+    <script type="text/javascript">
+
+        var initialChar = ["Darth Vader", "Luke Skywalker", "Obi-wan Kenobi", "Princess Leia", "Han Solo", "Chewbacca",
+            "Emperor Palaptine"
+        ];
+        renderButtons();
+        function renderButtons() {
+
+            $("#characterButtons").empty();
+
+            // Looping through the array of characters //
+            for (var i = 0; i < initialChar.length; i++) {
+
+                var a = $("<button>");
+                // Adding a class //
+                a.addClass("char");
+                // Adding a data-attribute //
+                a.attr("data-name", initialChar[i]);
+                // Providing the button's text with a value of the character at index i //
+                a.text(initialChar[i]);
+                // Adding the button to the HTML //
+                $("#characterButtons").append(a);
+            }
+
+            $(".char").on("click", function (event) {
+                //code
+                event.preventDefault();
+
+                // pulls user input from character input box //
+                var charToFind = $(this).attr("data-name");
+                // Constructed queryURL //
+                var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=BbMS1ak8XlKRe7Ku7ltGvHPnCKyc9PXk&q=" +
+                    charToFind + "&limit=10&offset=0&rating=G&lang=en";
+
+                //  This is our AJAX call //
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).done(function (response) {
+                    console.log(response);
+
+                    for (var i = 0; i < response.data.length; i++){
+                        var gifUrl=response.data[i].images.fixed_height.url
+                        console.log(gifUrl);
+                        var image = $("<img>").attr("src", gifUrl);
+                        $("#characterGifs").prepend(image);
+                    }
+                    
+                });
+
+            });
+        }
+
+
+        // Click event that triggers AJAX call //
+        $("#addCharacter").on("click", function (event) {
+
+            event.preventDefault();
+
+            // pulls user input from character input box //
+            var charToFind = $("#characterInput").val().trim();
+            $("#characterInput").val("");
+            // Constructed queryURL //
+            var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=BbMS1ak8XlKRe7Ku7ltGvHPnCKyc9PXk&q=" +
+                charToFind + "&limit=10&offset=0&rating=G&lang=en";
+
+            //  This is our AJAX call //
+
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).done(function (response) {
+                console.log(response);
+
+                for (var i = 0; i < response.data.length; i++){
+                    var gifUrl=response.data[i].images.fixed_height.url
+                    console.log(gifUrl);
+                    var image = $("<img>").attr("src", gifUrl);
+                    $("#characterGifs").prepend(image);
+                }
+                
+            });
+
+
+        });
+    </script>
+</body>
+
+
+
+
+</html>
